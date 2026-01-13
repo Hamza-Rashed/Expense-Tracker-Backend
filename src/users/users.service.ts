@@ -25,7 +25,7 @@ export class UsersService {
 
   // Create the user with hashed password
   createUserDto.password = hashedPassword;
-  this.databaseService.user.create({
+  await this.databaseService.user.create({
     data: createUserDto
   });
 

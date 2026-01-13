@@ -13,7 +13,7 @@ export class DatabaseService extends PrismaClient implements OnModuleDestroy, On
         });
     }
 
-    async onModuleInit() {
+    async onMouleInit() {
         await this.$connect();
     }
 

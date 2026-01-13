@@ -1,98 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🏢 Tenant Management System - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## ✅ Completed Tasks
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### 1. Project Setup
+- **Create New Nest JS Project** - Tenant Management System ✅
 
-## Description
+### 2. Database
+- **Create Prisma Connection With PostgreSQL** - Auth & User Models ✅
+- **Create DatabaseService Module** - Linked with `app.module` ✅
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 3. Modules
+- **User Module** - Handles user information ✅
+- **Auth Module** - Handles login and authentication (email & password) ✅
 
-## Project setup
+### 4. API Testing
+- **Test the APIs** to ensure all endpoints work as expected ✅  
+- **Test Cases:**  
+  - Create a User with Auth simultaneously using `$transaction` in Prisma (rollback if any fail) ✅  
+  - Verify login works as expected ✅
 
-```bash
-$ npm install
-```
+### 5. Error Handling
+- **Create Error System** in `src/errors` ✅
 
-## Compile and run the project
+### 6. Tools
+- **Postman** - Testing APIs ✅
 
-```bash
-# development
-$ npm run start
+### 7. Authentication
+- **Create Access Token** - Protect the APIs using JWT. Give access to the APIs based on the JWT ✅
+- **Create Refresh Token Table** - Store refresh token in DB upon login ✅
+- **Add User Device Info** - Store IP and UserAgent with refresh token ✅
 
-# watch mode
-$ npm run start:dev
+### 8. Account Management
+- **Lock Account** - Lock if failed login attempts > 5 ✅
+- **Unlock Account Function (Admin Module)**  
+  - Unlock without resetting password ✅  
+  - Unlock with password reset to default ✅
 
-# production mode
-$ npm run start:prod
-```
+### 9. Logout
+- **Logout Function**  
+  - Logout from current device ✅  
+  - Logout from all devices ✅
 
-## Run tests
+### 10. Roles
+- **User Roles (RBAC)**  
+  - Add role with user creation and access token ✅
+  - Protect the APIs using the role. Give access to the APIs based on the role ✅
 
-```bash
-# unit tests
-$ npm run test
+### 11. Helmet and Rate Limiting
+- **Helmet**  
+  - Use helmet middleware for security ✅
+- **Rate Limiting**  
+  - Rate Limiting Module: Protect the APIs using rate limiting ✅
 
-# e2e tests
-$ npm run test:e2e
+### 12. Updateted Auth
+- **Update using username instead of email**  
+  - Updated the login information to recieve the username instead of email when the user login and thet's because not all users have email address ✅
 
-# test coverage
-$ npm run test:cov
-```
+### 13. Update Schema.Prisma
+- **Tenant** 
+  - Create complete model related to Tenant Fields ✅
+- **User**  
+  - Complete creating all the required columns for the user model ✅
+- **New Tables**  
+  - Create TenantPlan, TenantType, TenantStatus, updated the role table ✅
 
-## Deployment
+### 14. Tenant Module
+- **CRUD Tenant** 
+  - Created a tenant module so we can create, update, delete, get tenants using **Tenant Module** ✅
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 15. **Create Tenant-User Module** ⏳
+- **Update the Service for it to include the following ::** ⏳
+  1 - Create a tenant with the admin user for the tenant. The response must be a username, default password and a link so the admin user can access the tenant account using them. ⏳
+  2 - Must ask the admin user to change the default password to his one for more security. ⏳
+  3 - The only role that can use the tenant-user API is (SYSTEM_OWNER & SUPER_ADMIN) => If the tenant admin user need to change anything related to this APIs (Tenant-User Module) he MUST call the SUPER_ADMIN. However, the admin user can change his password using the **Auth Module** ⏳
+  4 - Need to protuct the APIs for this module with JWT & Roles & Rate Limiting & Helmet. ⏳
+  5 - Give the ability to the user to have multible tenants. ⏳
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## ⏳ In-Progress Tasks
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🐞 Defect / Bug Tasks
 
-## License
+- **Point #1** - Still only removes cookies from different browsers; need to check this once we build the front-end app 🐞
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## 📝 TODO / Future Tasks (Example)
+
+- **Implement Front-End Integration** - Connect APIs to front-end framework 📝  
+- **Add Admin Dashboard** - For user management and monitoring 📝  
+- **Enhance Logging System** - Include request tracking and error reporting 📝  
