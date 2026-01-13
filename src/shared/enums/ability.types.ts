@@ -12,7 +12,7 @@ export enum Action {
   View = 'view', // for viewing a single record
 }
 
-export type Subjects = 'Admin' | 'User' | 'all'; // => 'all' is a special subject that covers everything
+export type Subjects = 'User' | 'Category' | 'Transaction' | 'Budget' |'all'; // => 'all' is a special subject that covers everything
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 
