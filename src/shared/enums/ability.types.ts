@@ -9,6 +9,7 @@ export enum Action {
   Update = 'update',
   Delete = 'delete',
   List = 'list', // for listing multiple records
+  ListOwn = 'list_own', // for listing own records
   View = 'view', // for viewing a single record
 }
 

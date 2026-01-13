@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -12,7 +12,7 @@ import { CheckAbility } from 'src/auth/decorators/ability.decorator';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post()
+  @Post('create-new-category')
   @CheckAbility({ action: Action.Create, subject: 'Category' })
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -26,19 +26,25 @@ export class CategoryController {
 
   @Get(':id')
   @CheckAbility({ action: Action.View, subject: 'Category' })
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.findOne(id);
+  }
+
+  @Get('user/:userId')
+  @CheckAbility({ action: Action.ListOwn, subject: 'Category' })
+  findByUserId(@Param('userId', ParseIntPipe) userId: number) {
+    return this.categoryService.findByUserId(userId);
   }
 
   @Patch(':id')
   @CheckAbility({ action: Action.Update, subject: 'Category' })
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(+id, updateCategoryDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
+    return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
   @CheckAbility({ action: Action.Delete, subject: 'Category' })
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.remove(id);
   }
 }

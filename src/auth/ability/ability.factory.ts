@@ -35,6 +35,18 @@ export class AbilityFactory {
         [Action.Create, Action.Update, Action.Delete, Action.List],
         'User',
       ).because("User Can't do actions with other users");
+      cannot(
+        [Action.List],
+        'Category',
+      ).because("Can't list categories of other users");
+      cannot(
+        [Action.List],
+        'Transaction',
+      ).because("Can't list transactions of other users");
+      cannot(
+        [Action.List],
+        'Budget',
+      ).because("Can't list budgets of other users");
     }
 
     // SIMPLEST FIX: Use a basic detectSubjectType for string-based subjects
