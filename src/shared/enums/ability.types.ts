@@ -9,10 +9,11 @@ export enum Action {
   Update = 'update',
   Delete = 'delete',
   List = 'list', // for listing multiple records
+  ListOwn = 'list_own', // for listing own records
   View = 'view', // for viewing a single record
 }
 
-export type Subjects = 'Admin' | 'User' | 'all'; // => 'all' is a special subject that covers everything
+export type Subjects = 'User' | 'Category' | 'Transaction' | 'Budget' |'all'; // => 'all' is a special subject that covers everything
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 

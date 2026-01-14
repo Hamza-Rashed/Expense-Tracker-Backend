@@ -1,27 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Errors } from 'src/errors/errors.factory';
 
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+
+  constructor( private databaseService: DatabaseService) {}
+  async create(createCategoryDto: CreateCategoryDto) {
+
+    // Check if the user exists
+    const userExists = await this.databaseService.user.findUnique({
+      where: { id: createCategoryDto.userId },
+    });
+
+    if (!userExists) {
+      throw Errors.NotFound('User', createCategoryDto.userId.toString());
+    }
+
+    await this.databaseService.category.create({
+      data: {
+        name: createCategoryDto.name,
+        userId: createCategoryDto.userId,
+      },
+    });
+
+    return `Category ${createCategoryDto.name} created successfully for user ID ${createCategoryDto.userId}`;
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async findAll() {
+    return await this.databaseService.category.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    return await this.databaseService.category.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  // Get all user categories
+  async findByUserId(userId: number) {
+    return await this.databaseService.category.findMany({
+      where: { userId },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    return await this.databaseService.category.update({
+      where: { id },
+      data: updateCategoryDto,
+    });
+  }
+
+  async remove(id: number) {
+    return await this.databaseService.category.delete({
+      where: { id },
+    });
   }
 }

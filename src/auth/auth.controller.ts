@@ -3,18 +3,43 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import type { Request, Response } from 'express';
 import { Errors } from 'src/errors/errors.factory';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiCookieAuth, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(200)
+  @ApiOperation({ summary: 'User login with email and password' })
+  @ApiBody({
+      type: LoginDto,
+      examples: {
+        example: {
+          value: {
+            email: 'admin@email.com',
+            password: '12345678',
+          },
+        },
+      },
+    })
+  @ApiResponse({ status: 200, description: 'Login successful, returns accessToken and sets refreshToken cookie', schema: {
+    example: {
+      accessToken: 'JWT_ACCESS_TOKEN',
+      user: {
+        id: 1,
+        fullName: 'John Doe',
+        email: 'admin@example.com',
+        role: 'admin'
+      }
+    }
+  }})
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(
     @Body() createAuthDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-
     const user = await this.authService.validateUser(
       createAuthDto.email,
       createAuthDto.password,
@@ -30,37 +55,44 @@ export class AuthController {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 
-    return{
+    return {
       accessToken: tokens.accessToken,
       user: tokens.user,
-    }
+    };
   }
 
-  // Refresh token endpoint
   @Post('refresh-token')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Refresh access token using HttpOnly refreshToken cookie' })
+  @ApiCookieAuth('refreshToken')
+  @ApiResponse({ status: 200, description: 'New accessToken and refreshToken returned', schema: {
+    example: {
+      accessToken: 'NEW_JWT_ACCESS_TOKEN',
+      user: {
+        id: 1,
+        fullName: 'John Doe',
+        email: 'admin@example.com',
+        role: 'admin'
+      }
+    }
+  }})
+  @ApiResponse({ status: 401, description: 'No refresh token provided or token invalid' })
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-        
-    // Get refresh token from HttpOnly cookie
     const refreshToken = req.get('Cookie')?.split('=')[1];
     if (!refreshToken) {
       throw Errors.Unauthorized('No refresh token provided');
     }
 
-    // Validate and get refresh tokens
-    const tokens = await this.authService.refreshTokens(
-      refreshToken,
-    );
+    const tokens = await this.authService.refreshTokens(refreshToken);
 
-    // Set new HttpOnly cookie for refresh token
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
     return {
@@ -71,40 +103,40 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Logout user by revoking refresh token and clearing cookie' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'User logged out successfully', schema: {
+    example: { success: 'You Logged out successfully' }
+  }})
+  @ApiResponse({ status: 401, description: 'No refresh token provided or already logged out' })
   async logout(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    
-    // Get refresh token from HttpOnly cookie
     const refreshToken = req.get('Cookie')?.split('=')[1];
     if (!refreshToken) {
       throw Errors.Unauthorized('You already logged out');
     }
 
-    // Get jti from access token
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      throw Errors.Unauthorized('Coold not find authorization header');
+      throw Errors.Unauthorized('Could not find authorization header');
     }
 
-    // Extract token and decode
     const token = authHeader.split(' ')[1];
-    const decoded = this.authService['jwtService'].decode(token) as any;    
+    const decoded = this.authService['jwtService'].decode(token) as any;
 
     if (decoded?.jti) {
       await this.authService.logout(decoded.jti);
     }
 
-    // Clear refresh token cookie
     res.clearCookie('refreshToken', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    path: '/',
-  });
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
 
     return { success: 'You Logged out successfully' };
-
   }
 }

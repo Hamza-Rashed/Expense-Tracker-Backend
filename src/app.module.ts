@@ -11,6 +11,7 @@ import RootConfigurations from './forRoot.config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     ConfigModule.forRoot(RootConfigurations),
     DatabaseModule,
+    KafkaModule,
     AuthModule,
     UsersModule,
     CategoryModule,
