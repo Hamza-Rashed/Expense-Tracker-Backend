@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { Errors } from 'src/errors/errors.factory';
 import * as aragon2 from 'argon2';
+import { userSafeSelect } from './dto/select-safe-user';
 
 @Injectable()
 export class UsersService {
@@ -33,12 +34,15 @@ export class UsersService {
 }
 
   async findAll() {
-    return await this.databaseService.user.findMany();
+    return await this.databaseService.user.findMany({
+      select: userSafeSelect,
+    });
   }
 
   async findOne(id: number) {
     return await this.databaseService.user.findUnique({
       where: { id },
+      select: userSafeSelect,
     });
   }
 

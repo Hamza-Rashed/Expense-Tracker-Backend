@@ -18,6 +18,14 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new AppExceptionFilter());
+  app.setGlobalPrefix('api');
+
+  app.enableCors({
+  origin: [
+    'http://localhost:3000',
+  ],
+  credentials: true,
+})
 
   // Swagger Configuration
   const config = new DocumentBuilder()
@@ -27,11 +35,11 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api-docs', app, document);
 
   const configService = app.get(ConfigService);
   const PORT = configService.get('PORT');
-  await app.listen(PORT ?? 3000);
+  await app.listen(PORT ?? 4000);
 
 }
 bootstrap();
