@@ -64,28 +64,28 @@ This project allows users to **track income, expenses, categories, and budgets s
 
 ## Core Modules
 
-## 🌱 Database Seeding
+## Database Seeding
 
 Before running the application, make sure to run the database seed.
 
-### ▶️ Run Seed
+### Run Seed
 ```bash
 npx prisma db seed
 ```
 
-## 🔐 Default Login Credentials
+## Default Login Credentials
 
 After running the seed, you can log in using the following accounts:
 
-### 👑 Admin Account
+### Admin Account
 - **Email:** admin@gmail.com
 - **Password:** 123456
 
-### 👤 User Account
+### User Account
 - **Email:** user@gmail.com
 - **Password:** 123456
 
-> ⚠️ These credentials are for **development purposes only**.
+> These credentials are for **development purposes only**.
 
 ### **Users**
 - Admin can **create / update / delete** users
