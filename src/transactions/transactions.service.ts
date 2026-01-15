@@ -27,19 +27,39 @@ export class TransactionsService {
       return `Transaction has been created successfully for user ID ${createTransactionDto.userId}`;
     }
   
+    private readonly transactionInclude = {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          role: true,
+        },
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    };
+
     async findAll() {
-      return await this.databaseService.transaction.findMany();
+      return await this.databaseService.transaction.findMany({
+        include: this.transactionInclude,
+      });
     }
   
     async findOne(id: number) {
       return await this.databaseService.transaction.findUnique({
         where: { id },
+        include: this.transactionInclude,
       });
     }
 
     async findByCategoryId(categoryId: number) {
       return await this.databaseService.transaction.findMany({
         where: { categoryId },
+        include: this.transactionInclude,
       });
     }
 
@@ -52,6 +72,7 @@ export class TransactionsService {
             lte: endDate,
           },
         },
+        include: this.transactionInclude,
       });
     }
 
@@ -61,6 +82,7 @@ export class TransactionsService {
           userId,
           type,
         },
+        include: this.transactionInclude,
       });
     }
 
@@ -84,6 +106,7 @@ export class TransactionsService {
     async findByUserId(userId: number) {
       return await this.databaseService.transaction.findMany({
         where: { userId },
+        include: this.transactionInclude,
       });
     }
   

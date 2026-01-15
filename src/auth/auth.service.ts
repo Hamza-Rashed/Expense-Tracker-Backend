@@ -45,6 +45,7 @@ export class AuthService {
     // Return user info excluding sensitive data
     return {
       userId: userInfo.id,
+      fullName: userInfo.fullName,
       email: userInfo.email,
       role: userInfo.role,
     };
@@ -75,7 +76,7 @@ export class AuthService {
     });
 
     // Generate JWT token
-    const payload: JwtPayload = { userID: user.userId, email: user.email, jti, role: user.role };
+    const payload: JwtPayload = { userID: user.userId, email: user.email, jti, role: user.role, fullName: user.fullName };
     const accessToken = this.generateAccessToken(payload);
 
     return {
@@ -84,6 +85,7 @@ export class AuthService {
       user: {
         userID: user.userId,
         email: user.email,
+        fullName: user.fullName,
         role: user.role,
       },
     };

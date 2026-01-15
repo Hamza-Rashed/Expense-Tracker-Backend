@@ -30,13 +30,27 @@ export class CategoryService {
     return `Category ${createCategoryDto.name} created successfully for user ID ${createCategoryDto.userId}`;
   }
 
+  private readonly categoryInclude = {
+    user: {
+      select: {
+        id: true,
+        fullName: true,
+        role: true,
+      },
+    }
+  };
+
+
   async findAll() {
-    return await this.databaseService.category.findMany();
+    return await this.databaseService.category.findMany({
+      include: this.categoryInclude,
+    });
   }
 
   async findOne(id: number) {
     return await this.databaseService.category.findUnique({
       where: { id },
+      include: this.categoryInclude,
     });
   }
 
@@ -44,6 +58,7 @@ export class CategoryService {
   async findByUserId(userId: number) {
     return await this.databaseService.category.findMany({
       where: { userId },
+      include: this.categoryInclude,
     });
   }
 
