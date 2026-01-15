@@ -76,6 +76,7 @@ This project allows users to **track income, expenses, categories, and budgets s
 ### **Categories**
 - Each user can create multiple categories
 - Duplicate category names per user are **not allowed**
+- Can't delete a category if linked with transactions
 - Categories are **user-scoped**
 
 **APIs:**
