@@ -14,7 +14,7 @@ export function mapPrismaError(error: unknown) {
         );
 
       case 'P2003':
-        return Errors.BadRequest('Invalid foreign key reference');
+        return Errors.BadRequest('Invalid foreign key reference Or have some related records');
 
       case 'P2025':
         return Errors.ResourceNotFound('Requested record not found');

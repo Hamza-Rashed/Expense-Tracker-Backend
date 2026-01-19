@@ -33,12 +33,20 @@ export class AbilityFactory {
       can(Action.Manage, 'all');
       cannot(
         [Action.Create, Action.Update, Action.Delete, Action.List],
-        'Admin',
-      ).because('Cannot modify Admin Info');
-      cannot(
-        [Action.Create, Action.Update, Action.Delete, Action.List],
         'User',
       ).because("User Can't do actions with other users");
+      cannot(
+        [Action.List],
+        'Category',
+      ).because("Can't list categories of other users");
+      cannot(
+        [Action.List],
+        'Transaction',
+      ).because("Can't list transactions of other users");
+      cannot(
+        [Action.List],
+        'Budget',
+      ).because("Can't list budgets of other users");
     }
 
     // SIMPLEST FIX: Use a basic detectSubjectType for string-based subjects
@@ -64,7 +72,7 @@ export class AbilityFactory {
     }
 
     // Handle case when item is one of our subject types
-    const subjectTypes: Subjects[] = ['Admin', 'User', 'all'];
+    const subjectTypes: Subjects[] = ['User', 'Category', 'Transaction', 'Budget', 'all'];
     if (typeof item === 'string' && subjectTypes.includes(item as Subjects)) {
       return item as ExtractSubjectType<Subjects>;
     }

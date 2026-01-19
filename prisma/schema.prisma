@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+enum UserStatus {
+  active
+  inactive
+}
+
+enum Roles {
+  admin
+  user
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  fullName      String
+  email         String         @unique
+  password      String
+  categories    Category[]
+  transactions  Transaction[]
+  refreshTokens RefreshToken[]
+  status        UserStatus     @default(active)
+  role          Roles          @default(admin)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  budget       Budget?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@unique([name, userId])
+  @@map("categories")
+}
+
+model Transaction {
+  id         Int             @id @default(autoincrement())
+  amount     Float
+  type       TransactionType
+  date       DateTime
+  userId     Int
+  categoryId Int
+
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("transactions")
+}
+
+model Budget {
+  id         Int      @id @default(autoincrement())
+  amount     Float
+  categoryId Int      @unique
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("budgets")
+}
+
+model RefreshToken {
+  id        Int       @id @default(autoincrement())
+  tokenHash String
+  jti       String    @unique // JWT ID for identifying the token
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  @@map("refresh_tokens")
+}
